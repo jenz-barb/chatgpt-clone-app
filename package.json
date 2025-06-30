@@ -1,0 +1,15 @@
+{
+  "name": "chatgpt-clone-app",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
+    "start-backend": "uvicorn main:app --reload",
+    "start-frontend": "cd chatgpt-ui && npm start"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^8.0.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11"
+  }
+}
