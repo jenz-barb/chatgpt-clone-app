@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
-import API from '../../../utils/API';
-
-
-
+import API from '../../utils/API';
 
 function Signup() {
   const [email, setEmail] = useState('');
