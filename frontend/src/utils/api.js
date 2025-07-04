@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'https://chatgpt-backend-p3nm.onrender.com', // ✅ Your live backend URL
 });
 
 API.interceptors.request.use((config) => {

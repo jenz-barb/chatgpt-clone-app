@@ -1,32 +1,21 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
+import API from '../../utils/API';
+
 
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
-      const response = await fetch('http://localhost:8000/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        alert('Signup failed: ' + (data.detail || 'Unknown error'));
-        return;
-      }
-
-      const result = await response.json();
-      alert(result.message);
-      window.location.href = '/login';
+      const response = await API.post('/auth/signup', { email, password });
+      alert(response.data.message || 'Signup successful!');
+      navigate('/login'); // ✅ Proper redirect
     } catch (error) {
-      alert('Signup failed: ' + error.message);
+      alert('Signup failed: ' + (error.response?.data?.detail || error.message));
     }
   };
 

@@ -1,51 +1,79 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import API from '../../utils/API';
+
 
 function Chat() {
   const [input, setInput] = useState("");
-  const [response, setResponse] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token")); // from login
+  const [messages, setMessages] = useState([]);
+  const navigate = useNavigate();
 
   const sendMessage = async () => {
+    if (!input.trim()) return;
+    const newMessages = [...messages, { sender: "User", text: input }];
+
     try {
-      const res = await axios.post(
-        "http://127.0.0.1:8000/chat",
-        { message: input },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setResponse(res.data.reply || JSON.stringify(res.data));
+      const res = await API.post('/chat/chat', { message: input });
+      setMessages([...newMessages, { sender: "AI", text: res.data.response }]);
+      setInput("");
     } catch (err) {
-      console.error(err);
-      setResponse("Error: " + (err.response?.data?.detail || "Something went wrong"));
+      setMessages([
+        ...newMessages,
+        { sender: "AI", text: "Something went wrong!" },
+      ]);
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
+    navigate("/login");
+  };
+
   return (
-    <div className="min-h-screen bg-blue-100 p-4 flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-4">Chat Page</h1>
-      <textarea
-        className="border p-2 w-full max-w-md mb-2"
-        rows="4"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type your message..."
-      ></textarea>
-      <button
-        onClick={sendMessage}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Send
-      </button>
-      {response && (
-        <div className="mt-4 p-2 bg-white rounded shadow max-w-md w-full">
-          <strong>Response:</strong>
-          <p>{response}</p>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
+      <div className="bg-blue-600 text-white w-full max-w-2xl text-center p-4 rounded-t-lg">
+        <h1 className="text-2xl font-semibold">Chat with AI</h1>
+      </div>
+
+      <div className="bg-white w-full max-w-2xl flex flex-col flex-grow p-4 rounded-b-lg shadow">
+        <div className="overflow-y-auto flex-1 space-y-2 mb-4 max-h-[60vh]">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`p-2 rounded-md ${
+                msg.sender === "User"
+                  ? "bg-blue-100 text-left"
+                  : "bg-green-100 text-right"
+              }`}
+            >
+              <strong>{msg.sender}:</strong> {msg.text}
+            </div>
+          ))}
         </div>
-      )}
+
+        <div className="flex gap-2">
+          <textarea
+            className="flex-1 border p-2 rounded"
+            rows="2"
+            value={input}
+            placeholder="Type your message..."
+            onChange={(e) => setInput(e.target.value)}
+          ></textarea>
+          <button
+            onClick={sendMessage}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Send
+          </button>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="text-red-500 mt-4 underline self-start"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

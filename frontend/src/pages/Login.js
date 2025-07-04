@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
+import API from '../../utils/API';
+
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -10,17 +11,14 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('http://localhost:8000/auth/login', {
-        email,
-        password,
-      });
+      const res = await API.post('/auth/login', { email, password });
 
       localStorage.setItem('token', res.data.access_token);
       localStorage.setItem('email', email);
 
-      navigate('/chat');
+      navigate('/chat'); // ✅ Proper redirect
     } catch (err) {
-      alert('Login failed: ' + (err.response?.data?.detail || 'Unknown error'));
+      alert('Login failed: ' + (err.response?.data?.detail || err.message));
     }
   };
 
