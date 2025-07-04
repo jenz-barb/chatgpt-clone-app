@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import AuthLayout from '../components/AuthLayout';
-import API from '../../utils/API';
+import AuthLayout from 'components/AuthLayout';
+import API from 'utils/API';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -15,7 +15,7 @@ function Login() {
       localStorage.setItem('token', res.data.access_token);
       localStorage.setItem('email', email);
 
-      navigate('/chat'); // ✅ Proper redirect
+      navigate('/chat');
     } catch (err) {
       alert('Login failed: ' + (err.response?.data?.detail || err.message));
     }
@@ -41,7 +41,7 @@ function Login() {
         Login
       </button>
       <Link to="/signup" className="text-blue-600 underline mt-4">
-        Don't have an account? Signup
+        Don’t have an account? Signup
       </Link>
     </AuthLayout>
   );

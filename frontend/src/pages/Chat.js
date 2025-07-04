@@ -1,43 +1,31 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import API from 'utils/API';
 
 function Chat() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-    const newMessages = [...messages, { sender: "User", text: input }];
+    const newMessages = [...messages, { sender: 'User', text: input }];
 
     try {
-const res = await axios.post(
-  "http://localhost:8000/chat/chat", // ✅ Correct FastAPI route
-  { message: input },
+      const res = await API.post('/chat/chat', { message: input });
 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setMessages([...newMessages, { sender: "AI", text: res.data.response }]);
-      setInput("");
+      setMessages([...newMessages, { sender: 'AI', text: res.data.response }]);
+      setInput('');
     } catch (err) {
-      setMessages([
-        ...newMessages,
-        { sender: "AI", text: "Something went wrong!" },
-      ]);
+      setMessages([...newMessages, { sender: 'AI', text: 'Something went wrong!' }]);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
-    navigate("/");
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    navigate('/');
   };
 
   return (
@@ -52,9 +40,9 @@ const res = await axios.post(
             <div
               key={index}
               className={`p-2 rounded-md ${
-                msg.sender === "User"
-                  ? "bg-blue-100 text-left"
-                  : "bg-green-100 text-right"
+                msg.sender === 'User'
+                  ? 'bg-blue-100 text-left'
+                  : 'bg-green-100 text-right'
               }`}
             >
               <strong>{msg.sender}:</strong> {msg.text}

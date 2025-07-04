@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/AuthLayout';
-import API from '../../utils/API';
+import { Link } from 'react-router-dom';
+import AuthLayout from 'components/AuthLayout';
+import API from 'utils/API';
 
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
       const response = await API.post('/auth/signup', { email, password });
-      alert(response.data.message || 'Signup successful!');
-      navigate('/login'); // ✅ Proper redirect
+
+      alert(response.data.message);
+      window.location.href = '/login';
     } catch (error) {
       alert('Signup failed: ' + (error.response?.data?.detail || error.message));
     }

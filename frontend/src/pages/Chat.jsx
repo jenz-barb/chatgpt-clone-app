@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from '../../utils/API';
+import API from 'utils/API';
+import AuthLayout from 'components/AuthLayout';
 
 
 function Chat() {
